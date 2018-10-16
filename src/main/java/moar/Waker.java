@@ -198,6 +198,16 @@ public class Waker<T extends WakeableRow>
     final int[] identityColumn = { 1 };
     try (ConnectionHold hold = session.reserve()) {
       final Connection cn = hold.get();
+
+      /* TODO: re-think sync on Waker.class. It's overkill and means that regardless of the number
+       * of open connections we are only in this block one thread at a time across the application.
+       * the obvious downside is the impact on the ability to scale but at the same time this is
+       * the ultimate protection against two competing threads issuing database operations that
+       * collide.
+       *
+       *  Especially with apps that use multiple different databases this is overkill.  We might
+       *  want to sync on a mutex associated with the connection url or narrow it down to the
+       *  moar session or just the connection. */
       synchronized (Waker.class) {
         try (PreparedStatement ps = cn.prepareStatement(sql, identityColumn)) {
           int p = 0;
