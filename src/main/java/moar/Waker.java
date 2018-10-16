@@ -211,7 +211,8 @@ public class Waker<T extends WakeableRow>
       synchronized (Waker.class) {
         try (PreparedStatement ps = cn.prepareStatement(sql, identityColumn)) {
           int p = 0;
-          ps.setObject(++p, null);
+          final String idColumn = "`id`";
+          ps.setObject(++p, map.get(idColumn));
           for (int i = 0; i < columns.size(); i++) {
             final int i1 = i;
             ps.setObject(++p, map.get(columns.get(i1)));
@@ -225,7 +226,7 @@ public class Waker<T extends WakeableRow>
             try (ResultSet rs = ps.getGeneratedKeys()) {
               if (rs.next()) {
                 final Object id = rs.getObject(1);
-                map.put("`id`", id);
+                map.put(idColumn, id);
                 woke.$set(map);
               }
             }
