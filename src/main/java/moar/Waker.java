@@ -114,8 +114,7 @@ public class Waker<T extends WakeableRow>
     }
   }
 
-  private Object doSessionUpsert(final Runoneable<T> updator) {
-    final T row = create(clz);
+  private T doSessionUpsertRow(final T row, final Runoneable<T> updator) {
     synchronized (session) {
       String sessionKey = null;
       key.run(row);
@@ -305,8 +304,13 @@ public class Waker<T extends WakeableRow>
   @Override
   public T upsert(final Runoneable<T> updator) {
     return (T) require(() -> {
-      return doSessionUpsert(updator);
+      return doSessionUpsertRow(create(clz), updator);
     });
+  }
+
+  @Override
+  public T upsert(final T row) {
+    return doSessionUpsertRow(row, r -> {});
   }
 
 }

@@ -7,4 +7,5 @@ public interface WokenWithoutKey<T extends WakeableRow> {
 
   WokenWithData<T> key(Runoneable<T> r);
 
+  T upsert(T r);
 }
