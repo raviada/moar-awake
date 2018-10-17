@@ -310,6 +310,7 @@ public class Waker<T extends WakeableRow>
 
   @Override
   public T upsert(final T row) {
+    key = r -> {};
     return doSessionUpsertRow(row, r -> {});
   }
 
