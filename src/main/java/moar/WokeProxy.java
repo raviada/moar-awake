@@ -85,8 +85,7 @@ public class WokeProxy
   }
 
   private String getPropertyName(final String name) {
-    final String var = name.substring("get".length());
-    return var;
+    return name.substring("get".length());
   }
 
   @Override
